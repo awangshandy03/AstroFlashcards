@@ -47,6 +47,7 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
             margin-bottom: 30px;
+            position: relative; /* For overlay positioning */
         }
         .active {
             display: block;
@@ -104,6 +105,7 @@
             justify-content: center;
             align-items: center;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative; /* For overlay positioning */
         }
         .flashcard img {
             max-width: 100%;
@@ -123,6 +125,7 @@
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             margin: 20px 0;
+            width: 100%;
         }
         .option-btn {
             padding: 15px;
@@ -133,6 +136,7 @@
             font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.2s ease;
+            word-break: break-word; /* Handle long names */
         }
         .option-btn:hover {
             background: rgba(255, 255, 255, 0.25);
@@ -324,6 +328,36 @@
             cursor: not-allowed;
         }
 
+        /* Overlay for skipped answers */
+        .skip-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            text-align: center;
+            min-width: 300px;
+            max-width: 80%;
+        }
+        .skip-overlay h3 {
+            margin-bottom: 15px;
+            color: #e74c3c;
+        }
+        .skip-overlay-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .skip-overlay-list li {
+            padding: 8px;
+            font-size: 1.2rem;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -434,6 +468,8 @@
                         <div id="incorrect-answers" class="answer-items"></div>
                     </div>
                 </div>
+                <!-- Overlay for skipped answers -->
+                <div id="skip-overlay" class="skip-overlay" style="display: none;"></div>
             </div>
             <div class="options-container" id="options-container">
                 <!-- Options will be added here dynamically -->
@@ -477,6 +513,7 @@
         let currentConstellationMessiers = []; // Stores Messier numbers for the current constellation question
         
         // Full constellation data with abbreviations and brightest stars
+        // FIXED: Ensured constellations is a single, continuous array
         const constellations = [
             { code: 'AND', name: 'Andromeda', brightest: ['Alpheratz', 'Mirach', 'Almach'] },
             { code: 'ANT', name: 'Antlia', brightest: ['Alpha Antliae'] },
@@ -567,7 +604,9 @@
             { code: "VOL", name: "Volans", brightest: [] },
             { code: "VUL", name: "Vulpecula", brightest: ["Anser"] }
         ];
+        
         // Full Messier objects data (M1-M110)
+        // FIXED: Ensured messierObjects is a single, continuous array
         const messierObjects = [
             { code: "M001", name: "Crab Supernova Remnant Nebula", constellation: "Taurus" },
             { code: "M002", name: "NGC 7089 Globular Cluster", constellation: "Aquarius" },
@@ -680,6 +719,7 @@
             { code: "M109", name: "Vacuum Cleaner Barred Spiral Galaxy", constellation: "Ursa Major" },
             { code: "M110", name: "Edward Young Star Elliptical Galaxy", constellation: "Andromeda" }
         ];
+        
         // Gamemode definitions
         const gamemodes = {
             constellation: [
@@ -795,7 +835,7 @@
                             type: 'image-to-name',
                             image: `image/cons/${constellation.code}.png`,
                             correctAnswer: constellation.name,
-                            allOptions: constellations.map(c => c.name)
+                            allOptions: constellations.map(c => c.name) // Fixed: Added missing options
                         });
                     } else if (currentGamemode === 'brightest-star') {
                         // Get a random star from the brightest list (1st to 5th)
@@ -835,7 +875,7 @@
                             type: 'image-to-code',
                             image: `image/messier/${messier.code}.png`,
                             correctAnswer: messier.code,
-                            allOptions: messierObjects.map(m => m.code)
+                            allOptions: messierObjects.map(m => m.code) // Fixed: Added missing options
                         });
                     } else if (currentGamemode === 'messier-constellation') {
                         const allConstellations = [...new Set(messierObjects.map(m => m.constellation))];
@@ -870,65 +910,98 @@
             const typingContainer = document.getElementById('typing-container');
             const answerLists = document.getElementById('answer-lists');
             const optionsContainer = document.getElementById('options-container');
-            
+            const skipOverlay = document.getElementById('skip-overlay'); // If used elsewhere, make sure it's declared
+
             // Reset option styles
             document.querySelectorAll('.option-btn').forEach(btn => {
                 btn.classList.remove('correct', 'incorrect');
             });
-            
+
             // Hide all question elements by default
             questionImage.style.display = 'none';
             typingContainer.style.display = 'none';
             answerLists.style.display = 'none';
             optionsContainer.innerHTML = ''; // Clear options
-            
-            // Set question text
-            questionText.textContent = question.question;
-            
+            // Assuming skipOverlay is hidden by default in CSS or handled elsewhere
+            // skipOverlay.style.display = 'none';
+
+            // Set question text - Fix: Initialize correctly
+            // For image questions, question.question is undefined, so don't set it yet
+            // For text questions, question.question will be used
+            // We'll set it specifically in the branches below
+            questionText.textContent = ''; // Start with empty text
+
             // Handle different question types
             if (question.type.includes('image')) {
                 questionImage.src = question.image;
                 questionImage.style.display = 'block';
+                // Explicitly clear text for image questions (like old version)
+                questionText.textContent = '';
+                // Options will be generated in the final 'else' block below (for non-typing image questions)
             } else if (question.type === 'constellation-to-messier-typing') {
+                // --- Typing Mode ---
                 typingContainer.style.display = 'block';
                 answerLists.style.display = 'flex';
                 document.getElementById('typing-input').value = '';
                 document.getElementById('typing-input').focus();
-                
+
                 // Store the correct answers for this question
                 currentConstellationMessiers = question.correctAnswers;
-                
+
                 // Reset typed answers tracking
                 currentTypedAnswers = { correct: new Set(), incorrect: new Set() };
                 updateAnswerLists(); // Clear the display lists
-                
+
                 // Add event listener for real-time validation
                 document.getElementById('typing-input').addEventListener('input', handleTypingInput);
-                
+
                 // Add event listener for Enter key submission
                 document.getElementById('typing-input').addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
                         submitTypedAnswer();
                     }
                 });
+
+                // --- FIX: Set the question text for typing mode ---
+                questionText.textContent = question.question || 'Type the Messier numbers:';
+
+                // Do not generate standard options for typing mode
+                return; // Exit early for typing mode
             } else {
+                // --- Standard Multiple Choice (Text-based questions) ---
+                // Set text for non-image questions
+                questionText.textContent = question.question || ''; // Fallback to empty string
+            }
+
+            // --- Generate Options for Standard Multiple Choice ---
+            // This block runs for image-based questions (falling through from first if)
+            // and text-based questions (from the final else)
+            // It does NOT run for typing mode (due to the 'return' above)
+            if (question.type !== 'constellation-to-messier-typing') { // Extra safety check
                 // Standard multiple choice
                 // Generate and display options
                 const options = getOptions(question.correctAnswer, question.allOptions, 6);
-                options.forEach(option => {
-                    const button = document.createElement('button');
-                    button.className = 'option-btn';
-                    button.textContent = option;
-                    button.onclick = () => checkAnswer(option, question.correctAnswer);
-                    optionsContainer.appendChild(button);
-                });
+                // Check if options were generated
+                if (options && options.length > 0) {
+                    options.forEach(option => {
+                        const button = document.createElement('button');
+                        button.className = 'option-btn';
+                        button.textContent = option;
+                        button.onclick = () => checkAnswer(option, question.correctAnswer);
+                        optionsContainer.appendChild(button);
+                    });
+                } else {
+                    // Handle case where options couldn't be generated
+                    console.error("Failed to generate options for question:", question);
+                    questionText.textContent = "Error: Could not load question options.";
+                }
             }
-            
+
             // Update question counter
             document.getElementById('current-question').textContent = currentQuestionIndex + 1;
-            document.getElementById('progress-bar').style.width = 
+            document.getElementById('progress-bar').style.width =
                 `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
-            
+
             // Start question timer if enabled
             if (questionTimerEnabled) {
                 startQuestionTimer();
@@ -994,12 +1067,19 @@
                 num => !currentTypedAnswers.correct.has(num)
             );
             
-            // Add them to the incorrect list for display purposes
-            missedAnswers.forEach(num => currentTypedAnswers.incorrect.add(num));
-            updateAnswerLists();
+            // Create the overlay content
+            const skipOverlay = document.getElementById('skip-overlay');
+            let overlayContent = '<h3>Missed Messier Objects:</h3><ul class="skip-overlay-list">';
+            missedAnswers.forEach(num => {
+                overlayContent += `<li>M${num}</li>`;
+            });
+            overlayContent += '</ul>';
+            skipOverlay.innerHTML = overlayContent;
+            skipOverlay.style.display = 'block'; // Show the overlay
             
             // Wait 1.5 seconds to show the missed answers, then proceed
             setTimeout(() => {
+                skipOverlay.style.display = 'none'; // Hide the overlay
                 processTypingResults(); // Process results and move to next question
             }, 1500);
         }

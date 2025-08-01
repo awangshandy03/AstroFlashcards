@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astronomy Flashcards</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .screen {
+            display: none;
+            background: rgba(30, 30, 46, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        .btn-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #3498db, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            min-width: 200px;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #2980b9, #9b59b6);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .gamemode-btn {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+        }
+        
+        .gamemode-btn:hover {
+            background: linear-gradient(45deg, #219653, #27ae60);
+        }
+        
+        .back-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            margin-top: 20px;
+        }
+        
+        .back-btn:hover {
+            background: linear-gradient(45deg, #c0392b, #a5281b);
+        }
+        
+        .flashcard {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .flashcard img {
+            max-width: 100%;
+            max-height: 500px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        
+        .flashcard h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .option-btn {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+        
+        .option-btn.correct {
+            background: rgba(46, 204, 113, 0.7);
+            border-color: #2ecc71;
+        }
+        
+        .option-btn.incorrect {
+            background: rgba(231, 76, 60, 0.7);
+            border-color: #e74c3c;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 1.2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .timer-display {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        
+        .timer-warning {
+            color: #e74c3c;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .settings {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .setting-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            gap: 15px;
+        }
+        
+        .setting-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .setting-item input[type="number"] {
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 80px;
+        }
+        
+        .setting-item label {
+            font-size: 1.1rem;
+            flex-grow: 1;
+        }
+        
+        .result-screen {
+            text-align: center;
+        }
+        
+        .result-stats {
+            font-size: 1.5rem;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .question-counter {
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌌 Astronomy Flashcards</h1>
+            <p class="subtitle">Test your knowledge of constellations and Messier objects</p>
+        </header>
+        
+        <!-- Main Menu Screen -->
+        <div id="main-menu" class="screen active">
+            <h2>Choose Category</h2>
+            <div class="btn-container">
+                <button class="btn" onclick="selectCategory('constellation')">Constellations</button>
+                <button class="btn" onclick="selectCategory('messier')">Messier Objects</button>
+            </div>
+        </div>
+        
+        <!-- Category Menu Screen -->
+        <div id="category-menu" class="screen">
+            <h2 id="category-title">Choose Gamemode</h2>
+            <div class="btn-container" id="gamemode-buttons">
+                <!-- Gamemode buttons will be added here dynamically -->
+            </div>
+            <button class="btn back-btn" onclick="showScreen('main-menu')">← Back</button>
+        </div>
+        
+        <!-- Settings Screen -->
+        <div id="settings-screen" class="screen">
+            <h2>Game Settings</h2>
+            <div class="settings">
+                <div class="setting-item">
+                    <input type="checkbox" id="round-timer-checkbox">
+                    <label for="round-timer-checkbox">Round Timer (minutes):</label>
+                    <input type="number" id="round-timer-value" min="1" max="60" value="5">
+                </div>
+                <div class="setting-item">
+                    <input type="checkbox" id="question-timer-checkbox">
+                    <label for="question-timer-checkbox">Question Timer (seconds):</label>
+                    <input type="number" id="question-timer-value" min="5" max="120" value="30">
+                </div>
+                <div class="setting-item">
+                    <label for="question-count">Questions per round:</label>
+                    <input type="number" id="question-count" min="5" max="110" value="20">
+                </div>
+            </div>
+            <button class="btn" onclick="startGame()">Start Game</button>
+            <button class="btn back-btn" onclick="showScreen('category-menu')">← Back</button>
+        </div>
+        
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="stats">
+                <div class="stat-item">
+                    <div>Correct</div>
+                    <div class="stat-value" id="correct-count">0</div>
+                </div>
+                <div class="stat-item">
+                    <div>Incorrect</div>
+                    <div class="stat-value" id="incorrect-count">0</div>
+                </div>
+                <div class="stat-item">
+                    <div>Score</div>
+                    <div class="stat-value" id="score">0%</div>
+                </div>
+            </div>
+            
+            <div class="question-counter">
+                Question <span id="current-question">1</span> of <span id="total-questions">10</span>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress" id="progress-bar" style="width: 10%"></div>
+            </div>
+            
+            <div class="timer-display" id="timer-display">
+                Time Remaining: <span id="time-remaining">30s</span>
+            </div>
+            
+            <div class="flashcard">
+                <h2 id="question-text">Question will appear here</h2>
+                <img id="question-image" src="" alt="Astronomy Image" style="display: none;">
+            </div>
+            
+            <div class="options-container" id="options-container">
+                <!-- Options will be added here dynamically -->
+            </div>
+            
+            <div class="controls">
+                <button class="control-btn" id="shuffle-btn" onclick="shuffleQuestions()">🔀 Shuffle</button>
+                <button class="control-btn" onclick="showScreen('settings-screen')">⚙️ Settings</button>
+            </div>
+        </div>
+        
+        <!-- Result Screen -->
+        <div id="result-screen" class="screen">
+            <div class="result-screen">
+                <h2>Game Completed!</h2>
+                <div class="result-stats">
+                    <p>Correct Answers: <span id="final-correct">0</span></p>
+                    <p>Incorrect Answers: <span id="final-incorrect">0</span></p>
+                    <p>Final Score: <span id="final-score">0%</span></p>
+                </div>
+                <button class="btn" onclick="restartGame()">Restart Game</button>
+                <button class="btn back-btn" onclick="showScreen('main-menu')">Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentCategory = '';
+        let currentGamemode = '';
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let roundTimer = null;
+        let questionTimer = null;
+        let roundTimeRemaining = 0;
+        let questionTimeRemaining = 0;
+        let roundTimerEnabled = false;
+        let questionTimerEnabled = false;
+        
+        // Full constellation data with abbreviations and brightest stars
+        const constellations = [
+            { code: 'AND', name: 'Andromeda', brightest: ['Alpha Andromedae', 'Beta Andromedae', 'Gamma Andromedae', 'Delta Andromedae', 'Epsilon Andromedae', 'Zeta Andromedae', 'Eta Andromedae'] },
+            { code: 'ANT', name: 'Antlia', brightest: ['Alpha Antliae', 'Beta Antliae', 'Gamma Antliae', 'Delta Antliae'] },
+            { code: 'APS', name: 'Apus', brightest: ['Alpha Apodis', 'Beta Apodis', 'Gamma Apodis', 'Delta Apodis'] },
+            { code: 'AQR', name: 'Aquarius', brightest: ['Alpha Aquarii', 'Beta Aquarii', 'Gamma Aquarii', 'Delta Aquarii', 'Epsilon Aquarii', 'Zeta Aquarii', 'Eta Aquarii', 'Theta Aquarii'] },
+            { code: 'AQL', name: 'Aquila', brightest: ['Alpha Aquilae', 'Beta Aquilae', 'Gamma Aquilae', 'Delta Aquilae', 'Epsilon Aquilae'] },
+            { code: 'ARA', name: 'Ara', brightest: ['Alpha Arae', 'Beta Arae', 'Gamma Arae', 'Delta Arae', 'Epsilon Arae', 'Zeta Arae', 'Eta Arae'] },
+            { code: 'ARI', name: 'Aries', brightest: ['Alpha Arietis', 'Beta Arietis', 'Gamma Arietis', 'Delta Arietis', 'Epsilon Arietis'] },
+            { code: 'AUR', name: 'Auriga', brightest: ['Alpha Aurigae', 'Beta Aurigae', 'Gamma Aurigae', 'Delta Aurigae', 'Epsilon Aurigae', 'Zeta Aurigae'] },
+            { code: 'BOO', name: 'Boötes', brightest: ['Alpha Bootis', 'Beta Bootis', 'Gamma Bootis', 'Delta Bootis', 'Epsilon Bootis', 'Zeta Bootis', 'Eta Bootis'] },
+            { code: 'CAE', name: 'Caelum', brightest: ['Alpha Caeli', 'Beta Caeli', 'Gamma Caeli'] },
+            { code: 'CAM', name: 'Camelopardalis', brightest: ['Alpha Camelopardalis', 'Beta Camelopardalis', 'Gamma Camelopardalis'] },
+            { code: 'CNC', name: 'Cancer', brightest: ['Alpha Cancri', 'Beta Cancri', 'Gamma Cancri', 'Delta Cancri'] },
+            { code: 'CVN', name: 'Canes Venatici', brightest: ['Alpha Canum Venaticorum', 'Beta Canum Venaticorum', 'Gamma Canum Venaticorum'] },
+            { code: 'CMA', name: 'Canis Major', brightest: ['Alpha Canis Majoris', 'Beta Canis Majoris', 'Gamma Canis Majoris', 'Delta Canis Majoris', 'Epsilon Canis Majoris', 'Eta Canis Majoris', 'Omicron Canis Majoris'] },
+            { code: 'CMI', name: 'Canis Minor', brightest: ['Alpha Canis Minoris', 'Beta Canis Minoris', 'Gamma Canis Minoris'] },
+            { code: 'CAP', name: 'Capricornus', brightest: ['Alpha Capricorni', 'Beta Capricorni', 'Gamma Capricorni', 'Delta Capricorni', 'Epsilon Capricorni', 'Zeta Capricorni', 'Eta Capricorni'] },
+            { code: 'CAR', name: 'Carina', brightest: ['Alpha Carinae', 'Beta Carinae', 'Theta Carinae', 'Upsilon Carinae', 'Iota Carinae', 'Omega Carinae'] },
+            { code: 'CAS', name: 'Cassiopeia', brightest: ['Alpha Cassiopeiae', 'Beta Cassiopeiae', 'Gamma Cassiopeiae', 'Delta Cassiopeiae', 'Epsilon Cassiopeiae'] },
+            { code: 'CEN', name: 'Centaurus', brightest: ['Alpha Centauri', 'Beta Centauri', 'Gamma Centauri', 'Delta Centauri', 'Epsilon Centauri', 'Zeta Centauri', 'Eta Centauri', 'Theta Centauri'] },
+            { code: 'CEP', name: 'Cepheus', brightest: ['Alpha Cephei', 'Beta Cephei', 'Gamma Cephei', 'Delta Cephei', 'Epsilon Cephei', 'Zeta Cephei', 'Eta Cephei'] },
+            { code: 'CET', name: 'Cetus', brightest: ['Alpha Ceti', 'Beta Ceti', 'Gamma Ceti', 'Delta Ceti', 'Epsilon Ceti', 'Zeta Ceti', 'Eta Ceti', 'Theta Ceti'] },
+            { code: 'CHA', name: 'Chamaeleon', brightest: ['Alpha Chamaeleontis', 'Beta Chamaeleontis', 'Gamma Chamaeleontis'] },
+            { code: 'CIR', name: 'Circinus', brightest: ['Alpha Circini', 'Beta Circini', 'Gamma Circini'] },
+            { code: 'COL', name: 'Columba', brightest: ['Alpha Columbae', 'Beta Columbae', 'Gamma Columbae', 'Delta Columbae', 'Epsilon Columbae'] },
+            { code: 'COM', name: 'Coma Berenices', brightest: ['Alpha Comae Berenices', 'Beta Comae Berenices', 'Gamma Comae Berenices', 'Delta Comae Berenices'] },
+            { code: 'CRA', name: 'Corona Australis', brightest: ['Alpha Coronae Australis', 'Beta Coronae Australis', 'Gamma Coronae Australis', 'Delta Coronae Australis', 'Epsilon Coronae Australis'] },
+            { code: 'CRB', name: 'Corona Borealis', brightest: ['Alpha Coronae Borealis', 'Beta Coronae Borealis', 'Gamma Coronae Borealis', 'Delta Coronae Borealis', 'Epsilon Coronae Borealis'] },
+            { code: 'CRV', name: 'Corvus', brightest: ['Alpha Corvi', 'Beta Corvi', 'Gamma Corvi', 'Delta Corvi', 'Epsilon Corvi'] },
+            { code: 'CRT', name: 'Crater', brightest: ['Alpha Crateris', 'Beta Crateris', 'Gamma Crateris', 'Delta Crateris', 'Epsilon Crateris'] },
+            { code: 'CRU', name: 'Crux', brightest: ['Alpha Crucis', 'Beta Crucis', 'Gamma Crucis', 'Delta Crucis', 'Epsilon Crucis'] },
+            { code: 'CYG', name: 'Cygnus', brightest: ['Alpha Cygni', 'Beta Cygni', 'Gamma Cygni', 'Delta Cygni', 'Epsilon Cygni', 'Zeta Cygni', 'Eta Cygni'] },
+            { code: 'DEL', name: 'Delphinus', brightest: ['Alpha Delphini', 'Beta Delphini', 'Gamma Delphini', 'Delta Delphini', 'Epsilon Delphini'] },
+            { code: 'DOR', name: 'Dorado', brightest: ['Alpha Doradus', 'Beta Doradus', 'Gamma Doradus', 'Delta Doradus'] },
+            { code: 'DRA', name: 'Draco', brightest: ['Alpha Draconis', 'Beta Draconis', 'Gamma Draconis', 'Delta Draconis', 'Epsilon Draconis', 'Zeta Draconis', 'Eta Draconis'] },
+            { code: 'EQU', name: 'Equuleus', brightest: ['Alpha Equulei', 'Beta Equulei', 'Gamma Equulei', 'Delta Equulei'] },
+            { code: 'ERI', name: 'Eridanus', brightest: ['Alpha Eridani', 'Beta Eridani', 'Gamma Eridani', 'Delta Eridani', 'Epsilon Eridani', 'Zeta Eridani', 'Eta Eridani', 'Theta Eridani'] },
+            { code: 'FOR', name: 'Fornax', brightest: ['Alpha Fornacis', 'Beta Fornacis', 'Gamma Fornacis', 'Delta Fornacis'] },
+            { code: 'GEM', name: 'Gemini', brightest: ['Alpha Geminorum', 'Beta Geminorum', 'Gamma Geminorum', 'Delta Geminorum', 'Epsilon Geminorum', 'Zeta Geminorum', 'Eta Geminorum'] },
+            { code: 'GRU', name: 'Grus', brightest: ['Alpha Gruis', 'Beta Gruis', 'Gamma Gruis', 'Delta Gruis', 'Epsilon Gruis', 'Zeta Gruis'] },
+            { code: 'HER', name: 'Hercules', brightest: ['Alpha Herculis', 'Beta Herculis', 'Gamma Herculis', 'Delta Herculis', 'Epsilon Herculis', 'Zeta Herculis', 'Eta Herculis'] },
+            { code: 'HOR', name: 'Horologium', brightest: ['Alpha Horologii', 'Beta Horologii', 'Gamma Horologii', 'Delta Horologii'] },
+            { code: 'HYA', name: 'Hydra', brightest: ['Alphard', 'Beta Hydrae', 'Gamma Hydrae', 'Delta Hydrae', 'Epsilon Hydrae', 'Zeta Hydrae', 'Eta Hydrae', 'Theta Hydrae'] },
+            { code: 'HYI', name: 'Hydrus', brightest: ['Alpha Hydri', 'Beta Hydri', 'Gamma Hydri', 'Delta Hydri'] },
+            { code: 'IND', name: 'Indus', brightest: ['Alpha Indi', 'Beta Indi', 'Gamma Indi', 'Delta Indi'] },
+            { code: 'LAC', name: 'Lacerta', brightest: ['Alpha Lacertae', 'Beta Lacertae', 'Gamma Lacertae'] },
+            { code: 'LEO', name: 'Leo', brightest: ['Alpha Leonis', 'Beta Leonis', 'Gamma Leonis', 'Delta Leonis', 'Epsilon Leonis', 'Zeta Leonis', 'Eta Leonis'] },
+            { code: 'LMI', name: 'Leo Minor', brightest: ['Alpha Leonis Minoris', 'Beta Leonis Minoris', 'Gamma Leonis Minoris'] },
+            { code: 'LEP', name: 'Lepus', brightest: ['Alpha Leporis', 'Beta Leporis', 'Gamma Leporis', 'Delta Leporis', 'Epsilon Leporis', 'Zeta Leporis'] },
+            { code: 'LIB', name: 'Libra', brightest: ['Alpha Librae', 'Beta Librae', 'Gamma Librae', 'Delta Librae', 'Epsilon Librae', 'Zeta Librae', 'Eta Librae'] },
+            { code: 'LUP', name: 'Lupus', brightest: ['Alpha Lupi', 'Beta Lupi', 'Gamma Lupi', 'Delta Lupi', 'Epsilon Lupi', 'Zeta Lupi', 'Eta Lupi'] },
+            { code: 'LYN', name: 'Lynx', brightest: ['Alpha Lyncis', 'Beta Lyncis', 'Gamma Lyncis', 'Delta Lyncis'] },
+            { code: 'LYR', name: 'Lyra', brightest: ['Alpha Lyrae', 'Beta Lyrae', 'Gamma Lyrae', 'Delta Lyrae', 'Epsilon Lyrae', 'Zeta Lyrae'] },
+            { code: 'MEN', name: 'Mensa', brightest: ['Alpha Mensae', 'Beta Mensae', 'Gamma Mensae'] },
+            { code: 'MIC', name: 'Microscopium', brightest: ['Alpha Microscopii', 'Beta Microscopii', 'Gamma Microscopii'] },
+            { code: 'MON', name: 'Monoceros', brightest: ['Alpha Monocerotis', 'Beta Monocerotis', 'Gamma Monocerotis', 'Delta Monocerotis', 'Epsilon Monocerotis', 'Zeta Monocerotis'] },
+            { code: 'MUS', name: 'Musca', brightest: ['Alpha Muscae', 'Beta Muscae', 'Gamma Muscae', 'Delta Muscae'] },
+            { code: 'NOR', name: 'Norma', brightest: ['Gamma Normae', 'Delta Normae', 'Epsilon Normae', 'Eta Normae'] },
+            { code: 'OCT', name: 'Octans', brightest: ['Alpha Octantis', 'Beta Octantis', 'Gamma Octantis', 'Delta Octantis'] },
+            { code: 'OPH', name: 'Ophiuchus', brightest: ['Alpha Ophiuchi', 'Beta Ophiuchi', 'Gamma Ophiuchi', 'Delta Ophiuchi', 'Epsilon Ophiuchi', 'Zeta Ophiuchi', 'Eta Ophiuchi'] },
+            { code: 'ORI', name: 'Orion', brightest: ['Alpha Orionis', 'Beta Orionis', 'Gamma Orionis', 'Delta Orionis', 'Epsilon Orionis', 'Zeta Orionis', 'Kappa Orionis'] },
+            { code: 'PAV', name: 'Pavo', brightest: ['Alpha Pavonis', 'Beta Pavonis', 'Gamma Pavonis', 'Delta Pavonis', 'Epsilon Pavonis', 'Zeta Pavonis', 'Eta Pavonis'] },
+            { code: 'PEG', name: 'Pegasus', brightest: ['Alpha Pegasi', 'Beta Pegasi', 'Gamma Pegasi', 'Delta Pegasi', 'Epsilon Pegasi', 'Zeta Pegasi', 'Eta Pegasi'] },
+            { code: 'PER', name: 'Perseus', brightest: ['Alpha Persei', 'Beta Persei', 'Gamma Persei', 'Delta Persei', 'Epsilon Persei', 'Zeta Persei', 'Eta Persei'] },
+            { code: 'PHE', name: 'Phoenix', brightest: ['Alpha Phoenicis', 'Beta Phoenicis', 'Gamma Phoenicis', 'Delta Phoenicis', 'Epsilon Phoenicis'] },
+            { code: 'PIC', name: 'Pictor', brightest: ['Alpha Pictoris', 'Beta Pictoris', 'Gamma Pictoris', 'Delta Pictoris'] },
+            { code: 'PSC', name: 'Pisces', brightest: ['Alpha Piscium', 'Beta Piscium', 'Gamma Piscium', 'Delta Piscium', 'Epsilon Piscium', 'Zeta Piscium', 'Eta Piscium'] },
+            { code: 'PSA', name: 'Piscis Austrinus', brightest: ['Alpha Piscis Austrini', 'Beta Piscis Austrini', 'Gamma Piscis Austrini', 'Delta Piscis Austrini', 'Epsilon Piscis Austrini'] },
+            { code: 'PUP', name: 'Puppis', brightest: ['Alpha Puppis', 'Beta Puppis', 'Gamma Puppis', 'Delta Puppis', 'Epsilon Puppis', 'Zeta Puppis', 'Eta Puppis'] },
+            { code: 'PYX', name: 'Pyxis', brightest: ['Alpha Pyxidis', 'Beta Pyxidis', 'Gamma Pyxidis', 'Delta Pyxidis'] },
+            { code: 'RET', name: 'Reticulum', brightest: ['Alpha Reticuli', 'Beta Reticuli', 'Gamma Reticuli', 'Delta Reticuli'] },
+            { code: 'SGE', name: 'Sagitta', brightest: ['Alpha Sagittae', 'Beta Sagittae', 'Gamma Sagittae', 'Delta Sagittae'] },
+            { code: 'SGR', name: 'Sagittarius', brightest: ['Alpha Sagittarii', 'Beta Sagittarii', 'Gamma Sagittarii', 'Delta Sagittarii', 'Epsilon Sagittarii', 'Zeta Sagittarii', 'Eta Sagittarii'] },
+            { code: 'SCO', name: 'Scorpius', brightest: ['Alpha Scorpii', 'Beta Scorpii', 'Gamma Scorpii', 'Delta Scorpii', 'Epsilon Scorpii', 'Zeta Scorpii', 'Eta Scorpii', 'Theta Scorpii'] },
+            { code: 'SCL', name: 'Sculptor', brightest: ['Alpha Sculptoris', 'Beta Sculptoris', 'Gamma Sculptoris', 'Delta Sculptoris'] },
+            { code: 'SCT', name: 'Scutum', brightest: ['Alpha Scuti', 'Beta Scuti', 'Gamma Scuti', 'Delta Scuti'] },
+            { code: 'SER', name: 'Serpens', brightest: ['Alpha Serpentis', 'Beta Serpentis', 'Gamma Serpentis', 'Delta Serpentis', 'Epsilon Serpentis', 'Zeta Serpentis', 'Eta Serpentis'] },
+            { code: 'SEX', name: 'Sextans', brightest: ['Alpha Sextantis', 'Beta Sextantis', 'Gamma Sextantis', 'Delta Sextantis'] },
+            { code: 'TAU', name: 'Taurus', brightest: ['Alpha Tauri', 'Beta Tauri', 'Gamma Tauri', 'Delta Tauri', 'Epsilon Tauri', 'Zeta Tauri', 'Eta Tauri'] },
+            { code: 'TEL', name: 'Telescopium', brightest: ['Alpha Telescopii', 'Beta Telescopii', 'Gamma Telescopii', 'Delta Telescopii'] },
+            { code: 'TRI', name: 'Triangulum', brightest: ['Alpha Trianguli', 'Beta Trianguli', 'Gamma Trianguli', 'Delta Trianguli'] },
+            { code: 'TRA', name: 'Triangulum Australe', brightest: ['Alpha Trianguli Australis', 'Beta Trianguli Australis', 'Gamma Trianguli Australis', 'Delta Trianguli Australis'] },
+            { code: 'TUC', name: 'Tucana', brightest: ['Alpha Tucanae', 'Beta Tucanae', 'Gamma Tucanae', 'Delta Tucanae', 'Epsilon Tucanae'] },
+            { code: 'UMA', name: 'Ursa Major', brightest: ['Alpha Ursae Majoris', 'Beta Ursae Majoris', 'Gamma Ursae Majoris', 'Delta Ursae Majoris', 'Epsilon Ursae Majoris', 'Zeta Ursae Majoris', 'Eta Ursae Majoris'] },
+            { code: 'UMI', name: 'Ursa Minor', brightest: ['Alpha Ursae Minoris', 'Beta Ursae Minoris', 'Gamma Ursae Minoris', 'Delta Ursae Minoris', 'Epsilon Ursae Minoris', 'Zeta Ursae Minoris', 'Eta Ursae Minoris'] },
+            { code: 'VEL', name: 'Vela', brightest: ['Gamma Velorum', 'Delta Velorum', 'Kappa Velorum', 'Lambda Velorum', 'Mu Velorum', 'Omega Velorum'] },
+            { code: 'VIR', name: 'Virgo', brightest: ['Alpha Virginis', 'Beta Virginis', 'Gamma Virginis', 'Delta Virginis', 'Epsilon Virginis', 'Zeta Virginis', 'Eta Virginis'] },
+            { code: 'VOL', name: 'Volans', brightest: ['Alpha Volantis', 'Beta Volantis', 'Gamma Volantis', 'Delta Volantis'] },
+            { code: 'VUL', name: 'Vulpecula', brightest: ['Alpha Vulpeculae', 'Beta Vulpeculae', 'Gamma Vulpeculae', 'Delta Vulpeculae'] }
+        ];
+        
+        // Full Messier objects data (M1-M110)
+        const messierObjects = [
+            { code: 'M001', name: 'Crab Nebula', constellation: 'Taurus' },
+            { code: 'M002', name: 'Messier 2', constellation: 'Aquarius' },
+            { code: 'M003', name: 'Messier 3', constellation: 'Canes Venatici' },
+            { code: 'M004', name: 'Messier 4', constellation: 'Scorpius' },
+            { code: 'M005', name: 'Messier 5', constellation: 'Serpens' },
+            { code: 'M006', name: 'Butterfly Cluster', constellation: 'Scorpius' },
+            { code: 'M007', name: 'Ptolemy\'s Cluster', constellation: 'Scorpius' },
+            { code: 'M008', name: 'Lagoon Nebula', constellation: 'Sagittarius' },
+            { code: 'M009', name: 'Messier 9', constellation: 'Ophiuchus' },
+            { code: 'M010', name: 'Messier 10', constellation: 'Ophiuchus' },
+            { code: 'M011', name: 'Wild Duck Cluster', constellation: 'Scutum' },
+            { code: 'M012', name: 'Messier 12', constellation: 'Ophiuchus' },
+            { code: 'M013', name: 'Hercules Globular Cluster', constellation: 'Hercules' },
+            { code: 'M014', name: 'Messier 14', constellation: 'Ophiuchus' },
+            { code: 'M015', name: 'Messier 15', constellation: 'Pegasus' },
+            { code: 'M016', name: 'Eagle Nebula', constellation: 'Serpens' },
+            { code: 'M017', name: 'Omega Nebula', constellation: 'Sagittarius' },
+            { code: 'M018', name: 'Messier 18', constellation: 'Sagittarius' },
+            { code: 'M019', name: 'Messier 19', constellation: 'Ophiuchus' },
+            { code: 'M020', name: 'Trifid Nebula', constellation: 'Sagittarius' },
+            { code: 'M021', name: 'Messier 21', constellation: 'Sagittarius' },
+            { code: 'M022', name: 'Messier 22', constellation: 'Sagittarius' },
+            { code: 'M023', name: 'Messier 23', constellation: 'Sagittarius' },
+            { code: 'M024', name: 'Messier 24', constellation: 'Sagittarius' },
+            { code: 'M025', name: 'Messier 25', constellation: 'Sagittarius' },
+            { code: 'M026', name: 'Messier 26', constellation: 'Scutum' },
+            { code: 'M027', name: 'Dumbbell Nebula', constellation: 'Vulpecula' },
+            { code: 'M028', name: 'Messier 28', constellation: 'Sagittarius' },
+            { code: 'M029', name: 'Messier 29', constellation: 'Cygnus' },
+            { code: 'M030', name: 'Messier 30', constellation: 'Capricornus' },
+            { code: 'M031', name: 'Andromeda Galaxy', constellation: 'Andromeda' },
+            { code: 'M032', name: 'Messier 32', constellation: 'Andromeda' },
+            { code: 'M033', name: 'Triangulum Galaxy', constellation: 'Triangulum' },
+            { code: 'M034', name: 'Messier 34', constellation: 'Perseus' },
+            { code: 'M035', name: 'Messier 35', constellation: 'Gemini' },
+            { code: 'M036', name: 'Messier 36', constellation: 'Auriga' },
+            { code: 'M037', name: 'Messier 37', constellation: 'Auriga' },
+            { code: 'M038', name: 'Messier 38', constellation: 'Auriga' },
+            { code: 'M039', name: 'Messier 39', constellation: 'Cygnus' },
+            { code: 'M040', name: 'Messier 40', constellation: 'Ursa Major' },
+            { code: 'M041', name: 'Messier 41', constellation: 'Canis Major' },
+            { code: 'M042', name: 'Orion Nebula', constellation: 'Orion' },
+            { code: 'M043', name: 'De Mairan\'s Nebula', constellation: 'Orion' },
+            { code: 'M044', name: 'Beehive Cluster', constellation: 'Cancer' },
+            { code: 'M045', name: 'Pleiades', constellation: 'Taurus' },
+            { code: 'M046', name: 'Messier 46', constellation: 'Puppis' },
+            { code: 'M047', name: 'Messier 47', constellation: 'Puppis' },
+            { code: 'M048', name: 'Messier 48', constellation: 'Hydra' },
+            { code: 'M049', name: 'Messier 49', constellation: 'Virgo' },
+            { code: 'M050', name: 'Messier 50', constellation: 'Monoceros' },
+            { code: 'M051', name: 'Whirlpool Galaxy', constellation: 'Canes Venatici' },
+            { code: 'M052', name: 'Messier 52', constellation: 'Cassiopeia' },
+            { code: 'M053', name: 'Messier 53', constellation: 'Coma Berenices' },
+            { code: 'M054', name: 'Messier 54', constellation: 'Sagittarius' },
+            { code: 'M055', name: 'Messier 55', constellation: 'Sagittarius' },
+            { code: 'M056', name: 'Messier 56', constellation: 'Lyra' },
+            { code: 'M057', name: 'Ring Nebula', constellation: 'Lyra' },
+            { code: 'M058', name: 'Messier 58', constellation: 'Virgo' },
+            { code: 'M059', name: 'Messier 59', constellation: 'Virgo' },
+            { code: 'M060', name: 'Messier 60', constellation: 'Virgo' },
+            { code: 'M061', name: 'Messier 61', constellation: 'Virgo' },
+            { code: 'M062', name: 'Messier 62', constellation: 'Ophiuchus' },
+            { code: 'M063', name: 'Sunflower Galaxy', constellation: 'Canes Venatici' },
+            { code: 'M064', name: 'Black Eye Galaxy', constellation: 'Coma Berenices' },
+            { code: 'M065', name: 'Messier 65', constellation: 'Leo' },
+            { code: 'M066', name: 'Messier 66', constellation: 'Leo' },
+            { code: 'M067', name: 'Messier 67', constellation: 'Cancer' },
+            { code: 'M068', name: 'Messier 68', constellation: 'Hydra' },
+            { code: 'M069', name: 'Messier 69', constellation: 'Sagittarius' },
+            { code: 'M070', name: 'Messier 70', constellation: 'Sagittarius' },
+            { code: 'M071', name: 'Messier 71', constellation: 'Sagitta' },
+            { code: 'M072', name: 'Messier 72', constellation: 'Aquarius' },
+            { code: 'M073', name: 'Messier 73', constellation: 'Aquarius' },
+            { code: 'M074', name: 'Messier 74', constellation: 'Pisces' },
+            { code: 'M075', name: 'Messier 75', constellation: 'Sagittarius' },
+            { code: 'M076', name: 'Little Dumbbell Nebula', constellation: 'Perseus' },
+            { code: 'M077', name: 'Messier 77', constellation: 'Cetus' },
+            { code: 'M078', name: 'Messier 78', constellation: 'Orion' },
+            { code: 'M079', name: 'Messier 79', constellation: 'Lepus' },
+            { code: 'M080', name: 'Messier 80', constellation: 'Scorpius' },
+            { code: 'M081', name: 'Bode\'s Galaxy', constellation: 'Ursa Major' },
+            { code: 'M082', name: 'Cigar Galaxy', constellation: 'Ursa Major' },
+            { code: 'M083', name: 'Southern Pinwheel Galaxy', constellation: 'Hydra' },
+            { code: 'M084', name: 'Messier 84', constellation: 'Virgo' },
+            { code: 'M085', name: 'Messier 85', constellation: 'Coma Berenices' },
+            { code: 'M086', name: 'Messier 86', constellation: 'Virgo' },
+            { code: 'M087', name: 'Messier 87', constellation: 'Virgo' },
+            { code: 'M088', name: 'Messier 88', constellation: 'Coma Berenices' },
+            { code: 'M089', name: 'Messier 89', constellation: 'Virgo' },
+            { code: 'M090', name: 'Messier 90', constellation: 'Virgo' },
+            { code: 'M091', name: 'Messier 91', constellation: 'Coma Berenices' },
+            { code: 'M092', name: 'Messier 92', constellation: 'Hercules' },
+            { code: 'M093', name: 'Messier 93', constellation: 'Puppis' },
+            { code: 'M094', name: 'Cat\'s Eye Galaxy', constellation: 'Canes Venatici' },
+            { code: 'M095', name: 'Messier 95', constellation: 'Leo' },
+            { code: 'M096', name: 'Messier 96', constellation: 'Leo' },
+            { code: 'M097', name: 'Owl Nebula', constellation: 'Ursa Major' },
+            { code: 'M098', name: 'Messier 98', constellation: 'Coma Berenices' },
+            { code: 'M099', name: 'Messier 99', constellation: 'Coma Berenices' },
+            { code: 'M100', name: 'Messier 100', constellation: 'Coma Berenices' },
+            { code: 'M101', name: 'Pinwheel Galaxy', constellation: 'Ursa Major' },
+            { code: 'M102', name: 'Messier 102', constellation: 'Draco' },
+            { code: 'M103', name: 'Messier 103', constellation: 'Cassiopeia' },
+            { code: 'M104', name: 'Sombrero Galaxy', constellation: 'Virgo' },
+            { code: 'M105', name: 'Messier 105', constellation: 'Leo' },
+            { code: 'M106', name: 'Messier 106', constellation: 'Canes Venatici' },
+            { code: 'M107', name: 'Messier 107', constellation: 'Ophiuchus' },
+            { code: 'M108', name: 'Messier 108', constellation: 'Ursa Major' },
+            { code: 'M109', name: 'Messier 109', constellation: 'Ursa Major' },
+            { code: 'M110', name: 'Messier 110', constellation: 'Andromeda' }
+        ];
+        
+        // Gamemode definitions
+        const gamemodes = {
+            constellation: [
+                { id: 'constellation-name', name: 'Constellation → Name', description: 'Identify the constellation from its image' },
+                { id: 'brightest-star', name: 'Brightest Star', description: 'Identify the n-th brightest star in a constellation' }
+            ],
+            messier: [
+                { id: 'messier-location', name: 'Location → Codename', description: 'Identify Messier object from its location' },
+                { id: 'messier-constellation', name: 'Codename → Location', description: 'Match Messier object to its constellation' },
+                { id: 'messier-name', name: 'Codename → Common Name', description: 'Identify common name of Messier objects' }
+            ]
+        };
+        
+        // Show a specific screen
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show the requested screen
+            document.getElementById(screenId).classList.add('active');
+        }
+        
+        // Select category and show gamemodes
+        function selectCategory(category) {
+            currentCategory = category;
+            document.getElementById('category-title').textContent = 
+                category === 'constellation' ? 'Constellation Gamemodes' : 'Messier Gamemodes';
+            
+            const gamemodeButtons = document.getElementById('gamemode-buttons');
+            gamemodeButtons.innerHTML = '';
+            
+            gamemodes[category].forEach(mode => {
+                const button = document.createElement('button');
+                button.className = 'btn gamemode-btn';
+                button.textContent = mode.name;
+                button.onclick = () => selectGamemode(mode.id);
+                gamemodeButtons.appendChild(button);
+            });
+            
+            showScreen('category-menu');
+        }
+        
+        // Select gamemode and go to settings
+        function selectGamemode(gamemode) {
+            currentGamemode = gamemode;
+            showScreen('settings-screen');
+        }
+        
+        // Start the game
+        function startGame() {
+            // Get timer settings
+            roundTimerEnabled = document.getElementById('round-timer-checkbox').checked;
+            questionTimerEnabled = document.getElementById('question-timer-checkbox').checked;
+            
+            const roundMinutes = parseInt(document.getElementById('round-timer-value').value) || 5;
+            const questionSeconds = parseInt(document.getElementById('question-timer-value').value) || 30;
+            
+            roundTimeRemaining = roundMinutes * 60;
+            questionTimeRemaining = questionSeconds;
+            
+            // Generate questions based on category and gamemode
+            generateQuestions();
+            
+            // Reset game stats
+            correctCount = 0;
+            incorrectCount = 0;
+            currentQuestionIndex = 0;
+            
+            // Update UI
+            updateStats();
+            document.getElementById('total-questions').textContent = questions.length;
+            
+            // Start timers if enabled
+            if (roundTimerEnabled) {
+                startRoundTimer();
+            }
+            
+            // Show first question
+            showQuestion();
+            
+            // Show game screen
+            showScreen('game-screen');
+        }
+        
+        // Generate questions based on current category and gamemode
+        function generateQuestions() {
+            questions = [];
+            
+            // Get question count from user input
+            const questionCountInput = parseInt(document.getElementById('question-count').value) || 20;
+            const maxQuestions = currentCategory === 'constellation' ? constellations.length : messierObjects.length;
+            const numQuestions = Math.min(questionCountInput, maxQuestions);
+            
+            if (currentCategory === 'constellation') {
+                // Shuffle constellations
+                const shuffledConstellations = [...constellations].sort(() => Math.random() - 0.5);
+                
+                for (let i = 0; i < numQuestions; i++) {
+                    const constellation = shuffledConstellations[i % shuffledConstellations.length];
+                    
+                    if (currentGamemode === 'constellation-name') {
+                        questions.push({
+                            type: 'image-to-name',
+                            image: `image/cons/${constellation.code}.png`,
+                            correctAnswer: constellation.name,
+                            allOptions: constellations.map(c => c.name)
+                        });
+                    } else if (currentGamemode === 'brightest-star') {
+                        // Get a random star from the brightest list (1st to 5th)
+                        const starIndex = Math.floor(Math.random() * Math.min(5, constellation.brightest.length));
+                        const starRank = ['1st', '2nd', '3rd', '4th', '5th'][starIndex];
+                        
+                        questions.push({
+                            type: 'constellation-to-star',
+                            image: `image/cons/${constellation.code}.png`,
+                            question: `What is the ${starRank} brightest star in ${constellation.name}?`,
+                            correctAnswer: constellation.brightest[starIndex],
+                            allOptions: constellation.brightest.concat(
+                                constellations.flatMap(c => c.brightest)
+                            ).filter((_, index) => index < 20) // Limit options
+                        });
+                    }
+                }
+            } else if (currentCategory === 'messier') {
+                // Shuffle Messier objects
+                const shuffledMessier = [...messierObjects].sort(() => Math.random() - 0.5);
+                
+                for (let i = 0; i < numQuestions; i++) {
+                    const messier = shuffledMessier[i % shuffledMessier.length];
+                    
+                    if (currentGamemode === 'messier-location') {
+                        questions.push({
+                            type: 'image-to-code',
+                            image: `image/messier/${messier.code}.png`,
+                            correctAnswer: messier.code,
+                            allOptions: messierObjects.map(m => m.code)
+                        });
+                    } else if (currentGamemode === 'messier-constellation') {
+                        const allConstellations = [...new Set(messierObjects.map(m => m.constellation))];
+                        questions.push({
+                            type: 'code-to-constellation',
+                            question: messier.code,
+                            correctAnswer: messier.constellation,
+                            allOptions: allConstellations
+                        });
+                    } else if (currentGamemode === 'messier-name') {
+                        questions.push({
+                            type: 'code-to-name',
+                            question: messier.code,
+                            correctAnswer: messier.name,
+                            allOptions: messierObjects.map(m => m.name)
+                        });
+                    }
+                }
+            }
+            
+            // Shuffle questions
+            shuffleArray(questions);
+        }
+        
+        // Show current question
+        function showQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                endGame();
+                return;
+            }
+            
+            const question = questions[currentQuestionIndex];
+            const questionText = document.getElementById('question-text');
+            const questionImage = document.getElementById('question-image');
+            
+            // Reset option styles
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('correct', 'incorrect');
+            });
+            
+            // Hide image by default
+            questionImage.style.display = 'none';
+            
+            // Set question text and image
+            if (question.type.includes('image')) {
+                questionImage.src = question.image;
+                questionImage.style.display = 'block';
+                questionText.textContent = '';
+            } else {
+                questionText.textContent = question.question;
+                questionImage.style.display = 'none';
+            }
+            
+            // Generate and display options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            // Get 6 unique options including the correct answer
+            const options = getOptions(question.correctAnswer, question.allOptions, 6);
+            
+            // Create option buttons
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.textContent = option;
+                button.onclick = () => checkAnswer(option, question.correctAnswer);
+                optionsContainer.appendChild(button);
+            });
+            
+            // Update question counter
+            document.getElementById('current-question').textContent = currentQuestionIndex + 1;
+            document.getElementById('progress-bar').style.width = 
+                `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+            
+            // Start question timer if enabled
+            if (questionTimerEnabled) {
+                startQuestionTimer();
+            }
+        }
+        
+        // Check user's answer
+        function checkAnswer(selected, correct) {
+            // Disable all option buttons
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.onclick = null;
+            });
+            
+            // Stop question timer
+            if (questionTimer) {
+                clearInterval(questionTimer);
+                questionTimer = null;
+            }
+            
+            // Highlight correct and incorrect answers
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                if (btn.textContent === correct) {
+                    btn.classList.add('correct');
+                } else if (btn.textContent === selected && selected !== correct) {
+                    btn.classList.add('incorrect');
+                }
+            });
+            
+            // Update stats
+            if (selected === correct) {
+                correctCount++;
+            } else {
+                incorrectCount++;
+            }
+            
+            updateStats();
+            
+            // Move to next question after delay
+            setTimeout(() => {
+                currentQuestionIndex++;
+                showQuestion();
+            }, 500);
+        }
+        
+        // Update game statistics
+        function updateStats() {
+            document.getElementById('correct-count').textContent = correctCount;
+            document.getElementById('incorrect-count').textContent = incorrectCount;
+            
+            const total = correctCount + incorrectCount;
+            const score = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+            document.getElementById('score').textContent = `${score}%`;
+        }
+        
+        // Get a specified number of unique options including the correct answer
+        function getOptions(correct, allOptions, count) {
+            // Start with the correct answer
+            const options = [correct];
+            
+            // Create a copy of all options and remove the correct answer
+            const shuffledOptions = [...allOptions].filter(opt => opt !== correct).sort(() => Math.random() - 0.5);
+            
+            // Add options until we reach the desired count
+            while (options.length < count && shuffledOptions.length > 0) {
+                const option = shuffledOptions.pop();
+                if (!options.includes(option)) {
+                    options.push(option);
+                }
+            }
+            
+            // If we still don't have enough options, add placeholders
+            while (options.length < count) {
+                options.push(`Option ${options.length + 1}`);
+            }
+            
+            // Shuffle the options
+            return options.sort(() => Math.random() - 0.5);
+        }
+        
+        // Shuffle questions
+        function shuffleQuestions() {
+            shuffleArray(questions);
+            currentQuestionIndex = 0;
+            showQuestion();
+        }
+        
+        // Utility function to shuffle an array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        
+        // Start round timer
+        function startRoundTimer() {
+            if (roundTimer) clearInterval(roundTimer);
+            
+            roundTimer = setInterval(() => {
+                roundTimeRemaining--;
+                
+                const minutes = Math.floor(roundTimeRemaining / 60);
+                const seconds = roundTimeRemaining % 60;
+                const timeString = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                
+                document.getElementById('timer-display').innerHTML = 
+                    `Round Time Remaining: <span id="time-remaining">${timeString}</span>`;
+                
+                // Add warning class when time is low
+                if (roundTimeRemaining <= 30) {
+                    document.getElementById('time-remaining').classList.add('timer-warning');
+                }
+                
+                if (roundTimeRemaining <= 0) {
+                    clearInterval(roundTimer);
+                    endGame();
+                }
+            }, 1000);
+        }
+        
+        // Start question timer
+        function startQuestionTimer() {
+            if (questionTimer) clearInterval(questionTimer);
+            
+            questionTimeRemaining = parseInt(document.getElementById('question-timer-value').value) || 30;
+            
+            questionTimer = setInterval(() => {
+                questionTimeRemaining--;
+                
+                document.getElementById('time-remaining').textContent = 
+                    `${questionTimeRemaining}s`;
+                
+                // Add warning class when time is low
+                if (questionTimeRemaining <= 10) {
+                    document.getElementById('time-remaining').classList.add('timer-warning');
+                } else {
+                    document.getElementById('time-remaining').classList.remove('timer-warning');
+                }
+                
+                if (questionTimeRemaining <= 0) {
+                    clearInterval(questionTimer);
+                    // Auto-advance to next question
+                    currentQuestionIndex++;
+                    showQuestion();
+                }
+            }, 1000);
+        }
+        
+        // End the game
+        function endGame() {
+            // Clear timers
+            if (roundTimer) clearInterval(roundTimer);
+            if (questionTimer) clearInterval(questionTimer);
+            
+            // Calculate final stats
+            const total = correctCount + incorrectCount;
+            const score = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+            
+            // Update result screen
+            document.getElementById('final-correct').textContent = correctCount;
+            document.getElementById('final-incorrect').textContent = incorrectCount;
+            document.getElementById('final-score').textContent = `${score}%`;
+            
+            // Show result screen
+            showScreen('result-screen');
+        }
+        
+        // Restart the game
+        function restartGame() {
+            showScreen('settings-screen');
+        }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            showScreen('main-menu');
+        });
+    </script>
+</body>
+</html>
